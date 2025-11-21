@@ -1,0 +1,14 @@
+[project]
+name = "sercel"
+version = "0.1.0"
+description = "Small project using peewee for SQLite ORM"
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [{name = "WuJunkai2004"}]
+dependencies = [
+  "peewee>=3.0.0,<4.0.0",
+]
+
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"

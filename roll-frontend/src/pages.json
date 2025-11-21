@@ -1,0 +1,59 @@
+{
+	"pages": [
+		{
+			"path": "pages/roster/roster",
+			"style": {
+				"navigationBarTitleText": "名单管理"
+			}
+		},
+		{
+			"path": "pages/rollcall/rollcall",
+			"style": {
+				"navigationBarTitleText": "开始点名"
+			}
+		},
+		{
+			"path": "pages/statistics/statistics",
+			"style": {
+				"navigationBarTitleText": "结果统计"
+			}
+		},
+		{
+			"path": "pages/leaderboard/leaderboard",
+			"style": {
+				"navigationBarTitleText": "积分排行"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "智能点名",
+		"navigationBarBackgroundColor": "#2563eb",
+		"backgroundColor": "#f5f5f5"
+	},
+	"tabBar": {
+		"custom": true,
+		"color": "#999999",
+		"selectedColor": "#2563eb",
+		"backgroundColor": "#ffffff",
+		"list": [
+			{
+				"pagePath": "pages/roster/roster",
+				"text": "名单管理"
+			},
+			{
+				"pagePath": "pages/rollcall/rollcall",
+				"text": "开始点名"
+			},
+			{
+				"pagePath": "pages/statistics/statistics",
+				"text": "结果统计"
+			},
+			{
+				"pagePath": "pages/leaderboard/leaderboard",
+				"text": "积分排行"
+			}
+		]
+	}
+}
+

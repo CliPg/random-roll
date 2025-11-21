@@ -140,13 +140,14 @@ import { onShow } from '@dcloudio/uni-app'
 import SettingsModal from '@/components/SettingsModal.vue'
 import CustomTabBar from '@/components/CustomTabBar.vue'
 import { getStudentLists, saveCallRecord, getSettings, getSelectedListIndex } from '@/utils/storage'
-import { submitRollResult } from '@/utils/api'
+import { submitRollResult, pickRandomStudent } from '@/utils/api'
 
 const currentDate = ref('')
 const currentStudent = ref('点击开始')
 const isRolling = ref(false)
 const rollMode = ref<'random' | 'order'>('random')
 const lastCalled = ref('')
+// interval is no longer used; backend controls selection timing
 const interval = ref(300)
 const settingsModalRef = ref<InstanceType<typeof SettingsModal>>()
 const selectedListName = ref('当前未选择名单')
@@ -167,8 +168,7 @@ const selectedStudentInfo = reactive({
   display: ''
 })
 
-let rollInterval: ReturnType<typeof setInterval> | null = null
-let currentIndex = 0
+// frontend no longer controls the rolling interval; backend returns the selected student
 
 const formatDate = () => {
   const now = new Date()
@@ -240,7 +240,7 @@ const openResultForm = (studentLabel: string) => {
   showResultForm.value = true
 }
 
-const toggleRolling = () => {
+const toggleRolling = async () => {
   const studentLists = getStudentLists()
   const selectedIndex = getSelectedListIndex()
   
@@ -264,35 +264,28 @@ const toggleRolling = () => {
 
     loadSelectedListInfo()
     isRolling.value = true
-    const students = selectedList.students
-
-    if (rollMode.value === 'random') {
-      rollInterval = setInterval(() => {
-        const randomIndex = Math.floor(Math.random() * students.length)
-        currentStudent.value = students[randomIndex]
-      }, interval.value)
-    } else {
-      currentIndex = 0
-      rollInterval = setInterval(() => {
-        currentStudent.value = students[currentIndex % students.length]
-        currentIndex++
-      }, interval.value)
-    }
+    // Show a placeholder while backend computes/returns the selected student
+    currentStudent.value = '点名中...'
   } else {
     // 停止点名
     isRolling.value = false
-    if (rollInterval) {
-      clearInterval(rollInterval)
-      rollInterval = null
+    const selectedList = getStudentLists()[getSelectedListIndex()]
+    const currentDescription = selectedList ? selectedList.name : selectedListName.value
+    uni.showLoading({ title: '正在获取点名结果...' })
+    try {
+      const mode = rollMode.value === 'order' ? 'order' : 'random'
+      const res: any = await pickRandomStudent(currentDescription, mode)
+      uni.hideLoading()
+      const student = res?.data || {}
+      const label = (student.student_id ? student.student_id + '·' : '') + (student.student_name || '')
+      lastCalled.value = label
+      currentStudent.value = label
+      openResultForm(label)
+    } catch (err) {
+      uni.hideLoading()
+      console.error('点名失败', err)
+      uni.showToast({ title: '点名失败，请重试', icon: 'none' })
     }
-
-    if (!currentStudent.value || currentStudent.value === '点击开始') {
-      uni.showToast({ title: '暂无学生可记录', icon: 'none' })
-      return
-    }
-
-    lastCalled.value = currentStudent.value
-    openResultForm(currentStudent.value)
   }
 }
 
@@ -396,10 +389,7 @@ onShow(() => {
 })
 
 onUnmounted(() => {
-  if (rollInterval) {
-    clearInterval(rollInterval)
-    rollInterval = null
-  }
+  // no client-side interval to clean up
 })
 </script>
 

@@ -178,6 +178,13 @@ export async function exportStudents(description: string): Promise<any> {
   return request('/students/export', 'POST', body, headers)
 }
 
+// 从后端获取一个随机学生（由后端负责权限校验与随机选择）
+export async function pickRandomStudent(description: string, mode: 'random' | 'order' = 'random'): Promise<{ code: number; msg: string; data: { student_id: string; student_name: string } }> {
+  const headers = await buildIdentityHeaders()
+  const body = { description, mode }
+  return request('/roll/random', 'POST', body, headers)
+}
+
 // 获取当前用户在后端的所有名单及学生
 export async function getMyStudentLists(): Promise<{ description: string; students: any[] }[]> {
   const headers = await buildIdentityHeaders()

@@ -1,11 +1,15 @@
 # 随机点名系统 (random-roll)
-
+![开始点名](./imgs/开始点名界面.png)
 这是一个用于课堂点名与积分管理的轻量级系统，包含后端（Python + SQLite）和前端（Uni-app / Vue）两个部分，支持通过 Excel 导入学生名单、按积分概率随机点名、积分导出与排行榜等功能。
+
+视频讲解：[click](https://www.bilibili.com/video/BV1rfUVBcEoa)
 
 ## 简介
 
 - 功能：学生名单导入/导出、随机点名（按积分概率调节命中率）、顺序点名、提交点名结果并更新积分、积分排行榜展示。
 - 目标用户：教师/助教用于课堂点名、课堂互动及积分管理。
+
+
 
 ## 技术栈
 
@@ -93,21 +97,6 @@ pnpm install # 或 npm install
 ```bash
 pnpm run dev:mp-weixin
 ```
-
-
-### 导入学生（示例流程）
-
-1. 在前端「导入」界面选择 Excel 文件并上传到后端 `POST /students/import`。
-2. 后端解析并存储学生信息到 SQLite，返回导入结果。
-3. 可通过 `GET /students/list` 验证数据。
-
-如果需要在命令行直接导入（批量）：
-
-```bash
-python3 students/import.py path/to/students.xlsx
-```
-
-（具体脚本参数请查看 `students/import.py` 源码）
 
 
 ## 备注与贡献
